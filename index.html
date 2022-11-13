@@ -4,10 +4,11 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <title>Riyaz</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
+
 
   <!-- Favicons -->
   <link rel="shortcut icon" href="assets/img/favicon1.png" type="image/x-icon">
@@ -37,10 +38,10 @@
   ======================================================== -->
 </head>
 
-<body>
+<body >
 
   <!-- ======= Header ======= -->
-  <header id="header">
+  <header id="header" style="background-image: url(assets/img/favicon1.png); background-repeat: no-repeat;background-position-x:800px; background-position-y:100px ;">
     <div class="container">
 
       <h1><a href="index.html">Riyaz k</a></h1>
@@ -371,7 +372,7 @@
         </div>
       </div>
 
-      <form action="mailto:mohammedriyazriyaz04@gmail.com" method="post" role="form" class="php-email-form mt-4">
+      <!-- <form  method="post" role="form" id="submit-form" class="mt-4">
         <div class="row">
           <div class="col-md-6 form-group">
             <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
@@ -389,6 +390,39 @@
         <div class="my-3">
 
           <div class="text-center"><button type="submit" class="btn btn-primary">Send Message</button></div>
+      </form> -->
+
+
+      <form id="submit-form" action=""  class="email-form mt-4">
+        <div class="row">
+          <div class="col-md-6 form-group">
+            <input  type="text"  name="name" class="form-control" id="name" placeholder="Your Name" onkeyup="validateName()" required>
+            <span id="name-error" class="validation-label"></span>
+           
+          </div>
+          <div class="col-md-6 form-group mt-3 mt-md-0">
+            <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" onkeyup="validateEmail()" required>
+            <span id="email-error" class="validation-label"></span>
+            
+          </div>
+        </div>
+        <div class="form-group mt-3">
+          <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject" onkeyup="validateSubject()" required>
+          <span id="subject-error" class="validation-label"></span>
+           
+        </div>
+        <div class="form-group mt-3">
+          <textarea class="form-control" name="message" id="message" rows="5" placeholder="Message" onkeyup="validateMessage()" required></textarea>
+          <span id="message-error" class="validation-label"></span>
+          
+        </div>
+        <div class="my-3">
+          
+          <div class="error-message"></div>
+          
+        </div>
+        <div class="text-center form-control-submit-button"><button class="btn btn-primary" type="submit" onclick="return validateForm()">Send Message</button></div>
+        <span id="submit-error" class="text-center button-form"></span>
       </form>
 
     </div>
@@ -402,9 +436,107 @@
   <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
   <script src="assets/vendor/waypoints/noframework.waypoints.js"></script>
 
-  <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
+ <script>
+        $("#submit-form").submit((e)=>{
+            e.preventDefault()
+            $.ajax({
+                url:"https://script.google.com/macros/s/AKfycbyOtlyCRlHf-yBRPXC2SZxBFofT4z36vJQZZD8SrOvZSCOhk_wvmF0U3lajU45BvLCX/exec",
+                data:$("#submit-form").serialize(),
+                method:"post",
+                success:function (response){
+                    alert("Form submitted successfully")
+                    window.location.reload()
+                    //window.location.href="https://google.com"
+                },
+                error:function (err){
+                    alert("Something Error")
+    
+                }
+            })
+        })
+    </script>
+   <script>
 
+    var nameError = document.getElementById('name-error');
+    var emailError = document.getElementById('email-error');
+    var messageError = document.getElementById('message-error');
+    var submitError = document.getElementById('submit-error');
+    var subjectError=document.getElementById('subject-error')
+    
+    
+    function validateName() {
+        
+        var name= document.getElementById('name').value;
+    
+        if(name.length == 0){
+            nameError.innerHTML = 'Name is required';
+            return false;
+        }
+        if(!name.match(/^[A-Za-z]+[A-Za-z]+$/)) {
+            nameError.innerHTML = 'Write full name';
+            return false;
+        }
+        nameError.innerHTML = '';
+            return true;
+    }
+    
+    function validateEmail() {
+        var email = document.getElementById('email').value;
+    
+        if(email.length == 0) {
+            emailError.innerHTML = 'Email is required';
+            return false;
+        }
+        if(!email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)) {
+            emailError.innerHTML = 'Email invalid';
+            return false;
+        }
+        emailError.innerHTML = '';
+        return true;
+    }
+    
+    function validateMessage() {
+        var message = document.getElementById('message').value;
+        var required =30;
+        var left = required - message.length;
+    
+        if(left>0) {
+            messageError.innerHTML = left + ' more characters required.';
+            return false;
+        } else {
+            messageError.innerHTML = 'Enter a valid message';
+        }
+    
+        messageError.innerHTML = '';
+        return true;
+    }
+    
+    function validateSubject() {
+        var message = document.getElementById('subject').value;
+        var required =20;
+        var left = required - message.length;
+    
+        if(left>0) {
+            subjectError.innerHTML = left + ' more characters required.';
+            return false;
+        } else {
+            subjectError.innerHTML = 'Enter a valid subject';
+        }
+    
+        subjectError.innerHTML = '';
+        return true;
+    }
+    
+    function validateForm() {
+        if(!validateEmail() || !validateMessage() || !validateName() || !validateSubject()) {
+            submitError.style.display = 'block';
+            submitError.innerHTML = 'Please fix all errors to submit.';
+            setTimeout(function() {submitError.style.display = 'none';}, 3000);
+            return false;
+  }
+    }
+    </script>
 </body>
 
 </html>
